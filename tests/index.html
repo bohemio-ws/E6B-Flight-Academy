@@ -1,0 +1,15 @@
+<!doctype html><html lang="es"><meta charset="utf-8"><title>Pruebas E6B</title><style>body{font:16px system-ui;background:#07192b;color:white;padding:25px}li{margin:8px}.pass{color:#85f2b4}.fail{color:#ff8b8b}</style><h1>Pruebas matemáticas E6B</h1><p>Se ejecutan en el navegador, sin servicios externos.</p><ol id="results"></ol><h2 id="summary"></h2><script src="../js/e6b-math.js"></script><script>
+let total=0,failed=0;const m=E6BMath;
+function test(name,fn){total++;const li=document.createElement("li");try{fn();li.className="pass";li.textContent="✓ "+name}catch(e){failed++;li.className="fail";li.textContent="✗ "+name+" — "+e.message}document.getElementById("results").append(li)}
+function near(a,b,t=1e-7){if(Math.abs(a-b)>t)throw Error(a+" != "+b)}
+test("55 km a 110 km/h = 30 min",()=>near(m.timeMinutes(55,110),30));
+test("NM exacta",()=>near(m.nmToKm(1),1.852));
+for(const [scale,km] of [[250000,2.5],[500000,5],[1000000,10]])test("Escala 1:"+scale,()=>near(m.mapDistanceKm(1,scale),km));
+for(const [name,from,gs] of [["Sin viento",0,110],["Cara",90,90],["Cola",270,130]])test(name,()=>{const r=m.windTriangle(90,from,name==="Sin viento"?0:20,110);near(r.headingTrueDeg,90);near(r.groundSpeedKmh,gs)});
+test("Viento lateral desde norte: rumbo hacia norte",()=>{const r=m.windTriangle(90,0,20,110);near(r.headingTrueDeg,90-Math.asin(20/110)*180/Math.PI);near(r.groundSpeedKmh,Math.sqrt(110*110-20*20))});
+test("Viento lateral desde sur: rumbo hacia sur",()=>{const r=m.windTriangle(90,180,20,110);near(r.headingTrueDeg,90+Math.asin(20/110)*180/Math.PI)});
+test("Viento lateral superior a TAS: imposible",()=>{if(m.windTriangle(90,0,120,110).possible)throw Error("debería ser imposible")});
+test("Sin avance: imposible",()=>{if(m.windTriangle(90,90,110,110).possible)throw Error("debería ser imposible")});
+test("Normalización",()=>near(m.normalize(-10),350));
+test("Entradas inválidas",()=>{let ok=false;try{m.timeMinutes(10,0)}catch(e){ok=true}if(!ok)throw Error("no rechazó velocidad cero")});
+for(let track=0;track<360;track+=15)for(let from=0;from<360;from+=30)for(const speed of [0,12,35]){const r=m.windTriangle(track,from,speed,110);if(r.possible){const v=m.vectorCheck(track,r.headingTrueDeg,110,from,speed);test("Vectores T="+track+" W="+from+" V="+speed,()=>{near(v.crossKmh,0,1e-7);near(v.alongKmh,r.groundSpeedKmh,1e-7)})}}document.getElementById("summary").textContent=(total-failed)+"/"+total+" pruebas superadas";</script></html>
