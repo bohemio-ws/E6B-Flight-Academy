@@ -24,5 +24,14 @@ const t=normalize(trackDeg)*rad,h=normalize(headingDeg)*rad,w=normalize(windFrom
 const east=tasKmh*Math.sin(h)-windKmh*Math.sin(w),north=tasKmh*Math.cos(h)-windKmh*Math.cos(w);
 return {alongKmh:east*Math.sin(t)+north*Math.cos(t),crossKmh:east*Math.cos(t)-north*Math.sin(t)};
 }
-root.E6BMath=Object.freeze({normalize,timeMinutes,mapDistanceKm,windTriangle,vectorCheck,kmToNm:km=>{nonnegative(km,"km");return km/1.852},nmToKm:nm=>{nonnegative(nm,"NM");return nm*1.852}});
+function windFromVectors(headingDeg,tasKmh,trackDeg,groundSpeedKmh){
+number(headingDeg,"rumbo");positive(tasKmh,"TAS");number(trackDeg,"derrota");positive(groundSpeedKmh,"velocidad suelo");
+const h=normalize(headingDeg)*rad,t=normalize(trackDeg)*rad;
+const airEast=tasKmh*Math.sin(h),airNorth=tasKmh*Math.cos(h);
+const groundEast=groundSpeedKmh*Math.sin(t),groundNorth=groundSpeedKmh*Math.cos(t);
+const windEast=groundEast-airEast,windNorth=groundNorth-airNorth;
+const windKmh=Math.hypot(windEast,windNorth);
+return {windKmh,windFromDeg:windKmh<1e-9?null:normalize(Math.atan2(-windEast,-windNorth)/rad),windToDeg:windKmh<1e-9?null:normalize(Math.atan2(windEast,windNorth)/rad)};
+}
+root.E6BMath=Object.freeze({normalize,timeMinutes,mapDistanceKm,windTriangle,vectorCheck,windFromVectors,kmToNm:km=>{nonnegative(km,"km");return km/1.852},nmToKm:nm=>{nonnegative(nm,"NM");return nm*1.852}});
 })(typeof window!=="undefined"?window:globalThis);
