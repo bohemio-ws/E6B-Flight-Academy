@@ -1,0 +1,22 @@
+<!doctype html><html lang="es"><meta charset="utf-8"><title>Pruebas operaciones E6B</title><style>body{font:16px system-ui;background:#07192b;color:white;padding:24px}.pass{color:#85f2b4}.fail{color:#ff8b8b}</style><h1>Pruebas del taller E6B</h1><ol id="results"></ol><h2 id="summary"></h2><script src="../js/e6b-operations.js"></script><script>
+let pass=0,fail=0;const o=E6BOperations;function check(name,fn){const li=document.createElement('li');try{if(!fn())throw Error('Resultado incorrecto');li.textContent='✓ '+name;li.className='pass';pass++}catch(e){li.textContent='✗ '+name+': '+e.message;li.className='fail';fail++}document.getElementById('results').append(li)}const near=(a,b,t=1e-7)=>Math.abs(a-b)<t;
+check('55 km a 110 km/h = 30 minutos',()=>near(o.time(55,110),30));
+check('110 km/h durante 30 min = 55 km',()=>near(o.distance(110,30),55));
+check('55 km durante 30 min = 110 km/h',()=>near(o.speed(55,30),110));
+check('16 L/h durante 2,5 h = 40 L',()=>near(o.fuelUsed(16,2.5),40));
+check('40 L a 16 L/h = 2,5 h',()=>near(o.endurance(40,16),2.5));
+check('32 L en 2 h = 16 L/h',()=>near(o.fuelRate(32,2),16));
+check('17 × 25 = 425',()=>near(o.multiply(17,25),425));
+check('740 ÷ 37 = 20',()=>near(o.divide(740,37),20));
+check('300 ft/NM a 90 kt = 450 ft/min',()=>near(o.gradientFpm(300,90),450));
+check('1 NM = 1,852 km',()=>near(o.convert(1,'nm','km'),1.852));
+check('1 SM = 1,609344 km',()=>near(o.convert(1,'sm','km'),1.609344));
+check('1 US gal = 3,785411784 L',()=>near(o.convert(1,'usgal','l'),3.785411784));
+check('1 Imp gal = 4,54609 L',()=>near(o.convert(1,'impgal','l'),4.54609));
+check('1 ft = 0,3048 m',()=>near(o.convert(1,'ft','m'),0.3048));
+check('1 lb = 0,45359237 kg',()=>near(o.convert(1,'lb','kg'),0.45359237));
+check('Conversión inversa NM → km → NM',()=>near(o.convert(o.convert(73,'nm','km'),'km','nm'),73));
+check('Rechazar mezcla de volumen y distancia',()=>{try{o.convert(1,'l','km');return false}catch(e){return true}});
+check('Rechazar división por cero',()=>{try{o.divide(4,0);return false}catch(e){return true}});
+check('Rechazar velocidad cero',()=>{try{o.time(55,0);return false}catch(e){return true}});
+document.getElementById('summary').textContent=pass+' de '+(pass+fail)+' pruebas superadas.';</script>
