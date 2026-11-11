@@ -1,0 +1,20 @@
+<!doctype html><html lang="es"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Pruebas vectoriales de viento CR-3</title><style>body{font:16px system-ui;max-width:800px;margin:2rem auto;padding:1rem;background:#10283c;color:#fff}li{margin:.6rem}a{color:#e5c57e}</style><h1>Regresión matemática · viento</h1><p>Pruebas independientes del gráfico. Las lecturas físicas del CR-3 requieren contraste adicional.</p><ol id="checks"></ol><p id="summary"></p><a href="../academia/curso-cr3/">Volver al curso</a><script>
+const rad=Math.PI/180,norm=a=>((a%360)+360)%360,delta=a=>((a+180)%360+360)%360-180;
+function solve(tas,heading,from,speed){const h=heading*rad,flow=norm(from+180)*rad;const x=tas*Math.sin(h)+speed*Math.sin(flow),y=tas*Math.cos(h)+speed*Math.cos(flow);return{gs:Math.hypot(x,y),track:norm(Math.atan2(x,y)/rad),drift:delta(Math.atan2(x,y)/rad-heading),headwind:speed*Math.cos(delta(from-heading)*rad),crosswind:speed*Math.sin(delta(from-heading)*rad)}}
+const a=solve(230,60,120,30),b=solve(200,200,140,50),close=(a,b,t=.02)=>Math.abs(a-b)<t;
+const checks=[
+['Vídeo 6: componente de cara 15 kt',close(a.headwind,15)],
+['Vídeo 6: componente lateral 25,98 kt',close(Math.abs(a.crosswind),25.98076)],
+['Vídeo 6: GS 216,56 kt',close(a.gs,216.563)],
+['Vídeo 6: derrota no igual al rumbo',Math.abs(a.drift)>1],
+['Vídeo 7: componente de cara 25 kt',close(b.headwind,25)],
+['Vídeo 7: componente lateral 43,30 kt',close(Math.abs(b.crosswind),43.30127)],
+['Vídeo 7: GS 180,28 kt',close(b.gs,180.27756)],
+['Vídeo 7: GS no equivale a TAS menos componente de cara',Math.abs(b.gs-175)>5],
+['Sin viento: GS = TAS',close(solve(120,45,90,0).gs,120)],
+['Sin viento: derrota = rumbo',close(solve(120,45,90,0).track,45)],
+['Viento frontal puro: GS disminuye',close(solve(100,0,0,20).gs,80)],
+['Viento de cola puro: GS aumenta',close(solve(100,0,180,20).gs,120)],
+['Cruce 000°: normalización angular',delta(1-359)===2]
+];const root=document.getElementById('checks');for(const [label,ok] of checks){const li=document.createElement('li');li.textContent=(ok?'✓ ':'✗ ')+label;li.style.color=ok?'#a4f0bd':'#ffa3a3';root.append(li)}document.getElementById('summary').textContent=checks.filter(x=>x[1]).length+'/'+checks.length+' pruebas superadas';
+</script></html>
