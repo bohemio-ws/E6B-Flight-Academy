@@ -53,3 +53,9 @@ if(majorStep!==unitsPerCm)throw Error('La regla y la conversión de ruta no comp
 const ab=calc('A','B',500000);
 if(Math.abs(ab.cm-ab.svgLength/majorStep)>1e-10)throw Error('La distancia calculada no coincide con la graduación de la regla');
 console.log('Regla: 0,5 cm por subdivisión, 1 cm por marca principal, calibración compatible con las distancias');
+
+for(const id of ['chartLive','zoomOut','zoomIn','zoomReset','zoomValue'])if(!production.includes('id="'+id+'"'))throw Error('Falta control de lectura o zoom: '+id);
+if(!production.includes("r.cm.toFixed(2)+' cm de carta'"))throw Error('La ventana de lectura no muestra centímetros de carta');
+if(!production.includes("$('chart').setAttribute('viewBox'"))throw Error('La ampliación no modifica la vista de la carta');
+if(!production.includes("chartZoom=Math.min(1.75"))throw Error('Falta límite superior de ampliación');
+console.log('Lectura al borde de carta y zoom: controles, escala y límites presentes');
