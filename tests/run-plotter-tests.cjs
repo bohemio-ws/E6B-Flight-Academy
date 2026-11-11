@@ -21,3 +21,15 @@ console.log(expectations.length+' comprobaciones adicionales sobre la función R
 if(!production.includes('id="selectedRoute"'))throw Error('Falta la línea de ruta SVG');
 if(!production.includes("line.setAttribute('x1',p.x)")||!production.includes("line.setAttribute('y2',q.y)"))throw Error('La ruta visual no se actualiza al seleccionar tramo');
 console.log('Superadas comprobaciones estáticas del indicador de ruta y su actualización');
+
+const inlineScript=production.match(/<script>([\s\S]*?)<\/script>/i)?.[1];
+if(!inlineScript)throw Error('Falta script de la mesa de instrumentos');
+new vm.Script(inlineScript,{filename:'instrumentos/index.html'});
+const ids=[...production.matchAll(/\bid="([^"]+)"/g)].map(x=>x[1]);
+const duplicates=ids.filter((id,i)=>ids.indexOf(id)!==i);
+if(duplicates.length)throw Error('IDs HTML duplicados: '+duplicates.join(', '));
+const opened=(production.match(/<details\b/g)||[]).length,closed=(production.match(/<\/details>/g)||[]).length;
+if(opened!==closed)throw Error('Ayudas desplegables sin cierre');
+if(!production.includes('startPointerAngle:Math.atan2(p.y-pos.y,p.x-pos.x)')||!production.includes('pos.a=interaction.a+delta'))throw Error('El giro del asa vuelve a saltar al iniciar el arrastre');
+if(!production.includes("'lostpointercapture'"))throw Error('No se limpia el arrastre al perder captura táctil');
+console.log('Superadas sintaxis, unicidad de IDs, ayudas y controles táctiles');
