@@ -1,0 +1,26 @@
+name: CR3 mathematical regression
+on:
+  push:
+    paths:
+      - 'academia/curso-cr3/**'
+      - 'tests/cr3-*.html'
+      - 'tests/run-cr3-tests.cjs'
+      - '.github/workflows/cr3-regression.yml'
+  pull_request:
+    paths:
+      - 'academia/curso-cr3/**'
+      - 'tests/cr3-*.html'
+      - 'tests/run-cr3-tests.cjs'
+      - '.github/workflows/cr3-regression.yml'
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: CR3 scale and wind checks
+        run: node tests/run-cr3-tests.cjs
