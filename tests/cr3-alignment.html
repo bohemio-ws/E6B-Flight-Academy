@@ -1,0 +1,19 @@
+<!doctype html><html lang="es"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Pruebas CR-3 · alineación</title><style>body{font:16px system-ui;max-width:760px;margin:2rem auto;padding:1rem;background:#0c2030;color:#fff}li{padding:.4rem}a{color:#f1d18b}</style><h1>Pruebas matemáticas de alineación CR-3</h1><p>Comprueba geometría del índice 60 y proporciones. No valida las ventanas físicas del instrumento.</p><ol id="results"></ol><p id="summary"></p><a href="../academia/curso-cr3/">Volver al curso</a><script>
+const norm=a=>((a+180)%360+360)%360-180;
+const angle=v=>360*Math.log10(v/10);
+const index60=angle(60);
+const rotFor=x=>norm(angle(x));
+const aligned=(r,x,tol=3)=>Math.abs(norm(r-rotFor(x)))<=tol;
+const cases=[
+['60 interior frente a 90 exterior',aligned(rotFor(90),90)],
+['60 interior frente a 30 exterior',aligned(rotFor(30),30)],
+['90: rechazar giro cero',!aligned(0,90)],
+['30: rechazar giro cero',!aligned(0,30)],
+['90: aceptar ±2°',aligned(rotFor(90)+2,90)],
+['90: rechazar +4°',!aligned(rotFor(90)+4,90)],
+['Cruce 180°: tolerancia angular circular',Math.abs(norm(179-(-179)))===2],
+['200 NM a 90 kt = 133,33 min',Math.abs(200/90*60-133.333333333)<1e-6],
+['30 gal/h durante 130 min = 65 gal',30*130/60===65],
+['Índice 60 situado a las doce en la escala interior',Math.abs(angle(60)-index60)<1e-12]
+];const root=document.getElementById('results');for(const [label,pass] of cases){const li=document.createElement('li');li.textContent=(pass?'APROBADO: ':'ERROR: ')+label;li.style.color=pass?'#a2efbb':'#ff9c9c';root.append(li)}document.getElementById('summary').textContent=cases.filter(x=>x[1]).length+' de '+cases.length+' pruebas superadas';
+</script></html>
