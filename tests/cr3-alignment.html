@@ -4,6 +4,9 @@ const angle=v=>360*Math.log10(v/10);
 const index60=angle(60);
 const rotFor=x=>norm(angle(x));
 const aligned=(r,x,tol=3)=>Math.abs(norm(r-rotFor(x)))<=tol;
+const scaleAt=a=>10*Math.pow(10,((a%360)+360)%360/360);
+const innerAt=(a,rotation)=>scaleAt(a-rotation+angle(60));
+const near=(a,b,t=.06)=>Math.abs(a-b)<=t;
 const cases=[
 ['60 interior frente a 90 exterior',aligned(rotFor(90),90)],
 ['60 interior frente a 30 exterior',aligned(rotFor(30),30)],
@@ -14,6 +17,12 @@ const cases=[
 ['Cruce 180°: tolerancia angular circular',Math.abs(norm(179-(-179)))===2],
 ['200 NM a 90 kt = 133,33 min',Math.abs(200/90*60-133.333333333)<1e-6],
 ['30 gal/h durante 130 min = 65 gal',30*130/60===65],
-['Índice 60 situado a las doce en la escala interior',Math.abs(angle(60)-index60)<1e-12]
+['Índice 60 situado a las doce en la escala interior',Math.abs(angle(60)-index60)<1e-12],
+['Sonda: 20 exterior alineado con 13,33 interior (90 kt)',near(innerAt(angle(20),rotFor(90)),13.333333)],
+['Sonda: 65 exterior alineado con 13 interior (30 gal/h)',near(innerAt(angle(65),rotFor(30)),13)],
+['Sonda: lectura exterior 65',near(scaleAt(angle(65)),65)],
+['Sonda: escala cíclica al cruzar 360°',near(scaleAt(360),10)],
+['Sonda: índice 60 interior frente a 90 exterior',near(innerAt(angle(90),rotFor(90)),60)],
+['Sonda: índice 60 interior frente a 30 exterior',near(innerAt(angle(30),rotFor(30)),60)]
 ];const root=document.getElementById('results');for(const [label,pass] of cases){const li=document.createElement('li');li.textContent=(pass?'APROBADO: ':'ERROR: ')+label;li.style.color=pass?'#a2efbb':'#ff9c9c';root.append(li)}document.getElementById('summary').textContent=cases.filter(x=>x[1]).length+' de '+cases.length+' pruebas superadas';
 </script></html>
