@@ -17,3 +17,7 @@ const calc=vm.runInNewContext(production.slice(start,end)+';plotterRoute',{Math,
 const expectations=[['A','B',500000,34.875328,40.224371],['B','A',500000,214.875328,40.224371],['B','C',500000,114.904769,46.306047],['C','B',500000,294.904769,46.306047],['A','C',500000,78.266916,66.387122],['C','A',500000,258.266916,66.387122],['A','B',250000,34.875328,20.1121855],['A','B',1000000,34.875328,80.448742]];
 for(const [a,b,den,bearing,km] of expectations){const result=calc(a,b,den);if(Math.abs(result.bearing-bearing)>0.0001||Math.abs(result.km-km)>0.0001)throw Error('Error en código de producción: '+a+b+' escala '+den);}
 console.log(expectations.length+' comprobaciones adicionales sobre la función REAL del instrumento');
+
+if(!production.includes('id="selectedRoute"'))throw Error('Falta la línea de ruta SVG');
+if(!production.includes("line.setAttribute('x1',p.x)")||!production.includes("line.setAttribute('y2',q.y)"))throw Error('La ruta visual no se actualiza al seleccionar tramo');
+console.log('Superadas comprobaciones estáticas del indicador de ruta y su actualización');
