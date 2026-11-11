@@ -44,3 +44,12 @@ if(cr3.includes('30 gal/h')||cr3.includes('TAS 230 kt')||cr3.includes('FL150'))t
 const flightMinutes=100/90*60,usedLitres=18*120/60;
 if(Math.abs(flightMinutes-100/90*60)>1e-10||Math.abs(usedLitres-36)>1e-10)throw Error('Referencia ULM incorrecta');
 console.log('CR-3: sintaxis, progresión, ejemplos ULM y referencias numéricas correctos');
+
+if(!production.includes('const x=half*25,major=half%2===0'))throw Error('La regla no está graduada a intervalos de 25 unidades SVG por medio centímetro');
+if(!production.includes('String(Math.abs(half/2))'))throw Error('Las cifras de la regla no representan centímetros desde su centro');
+if(!production.includes('CENTÍMETROS DE CARTA · ESCALA SIMULADA'))throw Error('Falta aclarar la unidad y naturaleza simulada de la regla');
+const rulerHalfStep=25,unitsPerCm=50,majorStep=2*rulerHalfStep;
+if(majorStep!==unitsPerCm)throw Error('La regla y la conversión de ruta no comparten calibración');
+const ab=calc('A','B',500000);
+if(Math.abs(ab.cm-ab.svgLength/majorStep)>1e-10)throw Error('La distancia calculada no coincide con la graduación de la regla');
+console.log('Regla: 0,5 cm por subdivisión, 1 cm por marca principal, calibración compatible con las distancias');
