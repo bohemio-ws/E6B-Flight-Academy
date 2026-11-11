@@ -1,0 +1,21 @@
+<!doctype html><html lang="es"><meta charset="utf-8"><title>Pruebas del plotter</title><body><h1>Pruebas del plotter didáctico</h1><p id="summary"></p><ol id="results"></ol><script>
+const P={A:{x:80,y:520},B:{x:310,y:190},C:{x:730,y:385}};
+function measure(a,b,den){const p=P[a],q=P[b],dx=q.x-p.x,dy=q.y-p.y,cm=Math.hypot(dx,dy)/50,km=cm*den/100000;return {bearing:(Math.atan2(dx,-dy)*180/Math.PI+360)%360,cm,km,nm:km/1.852};}
+const near=(a,b,t=.0001)=>Math.abs(a-b)<t;
+const tests=[
+['A-B: derrota 034,8753°',near(measure('A','B',500000).bearing,34.875328)],
+['B-A: derrota recíproca 214,8753°',near(measure('B','A',500000).bearing,214.875328)],
+['B-C: derrota 114,9048°',near(measure('B','C',500000).bearing,114.904769)],
+['C-B: derrota recíproca 294,9048°',near(measure('C','B',500000).bearing,294.904769)],
+['A-C: derrota 078,2669°',near(measure('A','C',500000).bearing,78.266916)],
+['C-A: derrota recíproca 258,2669°',near(measure('C','A',500000).bearing,258.266916)],
+['A-B: 40,2244 km en 1:500.000',near(measure('A','B',500000).km,40.224371)],
+['B-C: 46,3060 km en 1:500.000',near(measure('B','C',500000).km,46.306047)],
+['A-C: 66,3871 km en 1:500.000',near(measure('A','C',500000).km,66.387122)],
+['A-B: 20,1122 km en 1:250.000',near(measure('A','B',250000).km,20.1121855)],
+['A-B: 80,4487 km en 1:1.000.000',near(measure('A','B',1000000).km,80.448742)],
+['Reciprocidad de distancia',near(measure('A','B',500000).km,measure('B','A',500000).km)],
+['NM equivalen a 1,852 km',near(measure('A','B',500000).nm*1.852,measure('A','B',500000).km)]
+];
+let pass=0;for(const [label,ok] of tests){const li=document.createElement('li');li.textContent=(ok?'✓ ':'✗ ')+label;document.getElementById('results').append(li);if(ok)pass++}document.getElementById('summary').textContent=pass+'/'+tests.length+' pruebas superadas';
+</script></body></html>

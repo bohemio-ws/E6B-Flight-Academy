@@ -1,0 +1,23 @@
+name: Plotter bearing and distance regression
+on:
+  push:
+    paths:
+      - 'instrumentos/**'
+      - 'tests/plotter-*'
+      - '.github/workflows/plotter-regression.yml'
+  pull_request:
+    paths:
+      - 'instrumentos/**'
+      - 'tests/plotter-*'
+      - '.github/workflows/plotter-regression.yml'
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node tests/run-plotter-tests.cjs
