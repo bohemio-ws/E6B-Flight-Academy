@@ -33,3 +33,14 @@ if(opened!==closed)throw Error('Ayudas desplegables sin cierre');
 if(!production.includes('startPointerAngle:Math.atan2(p.y-pos.y,p.x-pos.x)')||!production.includes('pos.a=interaction.a+delta'))throw Error('El giro del asa vuelve a saltar al iniciar el arrastre');
 if(!production.includes("'lostpointercapture'"))throw Error('No se limpia el arrastre al perder captura táctil');
 console.log('Superadas sintaxis, unicidad de IDs, ayudas y controles táctiles');
+
+const cr3=fs.readFileSync(path.join(__dirname,'../academia/curso-cr3/index.html'),'utf8');
+const cr3Script=cr3.match(/<script>([\s\S]*?)<\/script>/i)?.[1];
+if(!cr3Script)throw Error('No se encontró el script CR-3');
+new vm.Script(cr3Script,{filename:'academia/curso-cr3/index.html'});
+if((cr3.match(/<details\b/g)||[]).length!==(cr3.match(/<\/details>/g)||[]).length)throw Error('Ayudas CR-3 desbalanceadas');
+if(!cr3.includes("answer:67")||!cr3.includes("answer:36")||!cr3.includes("answer:7.5")||!cr3.includes("answer:10"))throw Error('Ejercicios ULM no están completos');
+if(cr3.includes('30 gal/h')||cr3.includes('TAS 230 kt')||cr3.includes('FL150'))throw Error('Persisten ejemplos fuera del perfil ULM');
+const flightMinutes=100/90*60,usedLitres=18*120/60;
+if(Math.abs(flightMinutes-100/90*60)>1e-10||Math.abs(usedLitres-36)>1e-10)throw Error('Referencia ULM incorrecta');
+console.log('CR-3: sintaxis, progresión, ejemplos ULM y referencias numéricas correctos');
