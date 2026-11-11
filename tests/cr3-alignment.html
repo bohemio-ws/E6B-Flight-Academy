@@ -2,7 +2,7 @@
 const norm=a=>((a+180)%360+360)%360-180;
 const angle=v=>360*Math.log10(v/10);
 const index60=angle(60);
-const rotFor=x=>norm(angle(x)-index60);
+const rotFor=x=>norm(angle(x));
 const aligned=(r,x,tol=3)=>Math.abs(norm(r-rotFor(x)))<=tol;
 const cases=[
 ['60 interior frente a 90 exterior',aligned(rotFor(90),90)],
