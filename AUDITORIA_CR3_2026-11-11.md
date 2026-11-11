@@ -28,3 +28,9 @@ Material aportado: siete MP4, `EXPLICACION CR3`, `CR302`, `CR303`, `CR304`, `CR3
 - Pruebas de cada operación con comparación independiente y tolerancia coherente con la resolución física.
 - Ensayos táctiles en móvil, ratón en ordenador, accesibilidad y funcionamiento sin conexión.
 - Validación final antes de publicar en `main`. Hasta entonces: **material experimental, no apto para navegación**.
+
+## Cotejo adicional de vídeo 6 y 7 (fotogramas, no audio)
+- **CR306**: alrededor de 60–160 s, rótulos en imagen: `TAS=230kt`, `HDG=060`, `Viento=120/30kt`. Se ve el manejo del disco y la retícula, sin validación todavía de cada posición de marca.
+- **CR307**: alrededor de 60–160 s, rótulos en imagen: `TAS=200kt`, `HDG=200`, `Viento=140/50`. Se observa señalamiento y marcado de retícula.
+- Comprobación matemática independiente, tomando el viento como procedencia: vídeo 6 GS ≈ 216,56 kt y derrota ≈ 053,11°; vídeo 7 GS ≈ 180,28 kt y derrota ≈ 213,90°. **Estos son resultados vectoriales calculados, no lecturas transcritas del instrumento**.
+- Añadida batería `tests/cr3-wind.html` de 13 comprobaciones: componentes, GS, diferencia rumbo/derrota, viento frontal/cola, ausencia de viento y normalización 000°.
