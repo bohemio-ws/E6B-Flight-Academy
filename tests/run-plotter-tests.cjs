@@ -59,3 +59,13 @@ if(!production.includes("r.cm.toFixed(2)+' cm de carta'"))throw Error('La ventan
 if(!production.includes("$('chart').setAttribute('viewBox'"))throw Error('La ampliación no modifica la vista de la carta');
 if(!production.includes("chartZoom=Math.min(1.75"))throw Error('Falta límite superior de ampliación');
 console.log('Lectura al borde de carta y zoom: controles, escala y límites presentes');
+
+for(const id of ['guidedPanel','guidedCount','guidedHeading','guidedInstruction','guidedPrev','guidedNext','guidedAuto','instrumentReadout'])if(!cr3.includes('id="'+id+'"'))throw Error('Falta control didáctico CR-3: '+id);
+if(!cr3.includes('function setRotation(a)')||!cr3.includes('function renderGuided()')||!cr3.includes('function updateInstrumentReadout()'))throw Error('No se actualiza el instrumento con la lección');
+if(!cr3.includes("setRotation(angle(rate))"))throw Error('No existe colocación de referencia del disco');
+const rotationForRate=r=>360*Math.log10(r/10);
+const angleAtOuter=v=>360*Math.log10(v/10);
+const innerAtOuter=(outer,rate)=>10*Math.pow(10,((angleAtOuter(outer)-rotationForRate(rate)+angleAtOuter(60)+720)%360)/360);
+const timeMark=innerAtOuter(10,90),fuelOuter=18*(120/60);
+if(Math.abs(timeMark-66.66666666666667)>0.0001||Math.abs(fuelOuter-36)>1e-10)throw Error('Alineación guiada incorrecta');
+console.log('CR-3: controles de enseñanza, giro de referencia y lecturas 100 km/90 km-h y 18 L-h/120 min verificados');
